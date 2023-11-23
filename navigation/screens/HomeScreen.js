@@ -1,24 +1,15 @@
-/**import * as React from 'react';
-import { View, Text } from 'react-native';
-
-export default function HomeScreen({ navigation }) {
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <Text
-                onPress={() => alert('This is the "Home" screen.')}
-                style={{ fontSize: 26, fontWeight: 'bold' }}>Home Screen</Text>
-        </View>
-    );
-}**/
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+
+let startTimeClock = "";
+let endTimeClock = "";
 
 const HomeScreen = ({ navigation }) => {
   const [clockedIn, setClockedIn] = useState(false);
   const [mealStart, setMealStart] = useState(false);
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [time, setTime] = useState(new Date());
 
   const handleClockIn = () => {
     setStartTime(new Date());
@@ -50,6 +41,7 @@ const HomeScreen = ({ navigation }) => {
 
   useEffect(() => {
     let interval;
+    setInterval(()=>setTime(new Date()),1000);
     if (clockedIn) {
         setElapsedTime(0);
       interval = setInterval(() => {
@@ -93,6 +85,7 @@ const HomeScreen = ({ navigation }) => {
                     style={styles.clickedButton} 
                     onPress={() => {
                         handleClockedIn()
+                        endTimeClock=time.toLocaleTimeString()
                     }}>
             <Text style={styles.buttonText}>Clock Out</Text>
             </TouchableOpacity>
@@ -101,6 +94,7 @@ const HomeScreen = ({ navigation }) => {
                 onPress={() => {
                     handleClockIn();
                     navigation.navigate('Sign In');
+                    startTimeClock=time.toLocaleTimeString();
                 } }
                 style={styles.button}>
                 <Text style={styles.buttonText}>Clock In</Text>
@@ -115,7 +109,10 @@ const HomeScreen = ({ navigation }) => {
             <Text style={styles.buttonText}>Start Meal</Text>
             </TouchableOpacity>
         )}
-        <Text style={styles.timer}>{formatTime(elapsedTime)}</Text>
+        <Text style={styles.timerLabel}>{"Start"}</Text>
+        <Text style={styles.timer}>{startTimeClock}</Text>
+        <Text style={styles.timerLabel}>{"End"}</Text>
+        <Text style={styles.timer}>{endTimeClock}</Text>
     </View>
   );
 };
@@ -126,21 +123,27 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  timerLabel: {
+    fontSize: 40,
+    marginBottom: 20,
+    fontWeight: 'bold',
+    textDecorationLine: 'underline',
+  },
   timer: {
-    fontSize: 50,
-    marginBottom: 30,
+    fontSize: 40,
+    marginBottom: 20,
   },
   button: {
     backgroundColor: '#3498db',
-    padding: 80,
+    padding: 50,
     borderRadius: 10,
-    marginBottom: 30,
+    marginBottom: 20,
   },
   clickedButton: {
     backgroundColor: '#FF0000',
-    padding: 80,
+    padding: 50,
     borderRadius: 10,
-    marginBottom: 30,
+    marginBottom: 20,
   },
   buttonText: {
     color: 'white',
